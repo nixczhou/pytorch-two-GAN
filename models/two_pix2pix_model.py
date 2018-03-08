@@ -49,7 +49,9 @@ class TwoPix2PixModel:
         self.detection_GAN.backward_G()
     
     def optimize_parameters(self):
-        pass
+        # optimize parameter independently
+        self.segmentation_GAN.optimize_parameters()
+        self.detection_GAN.optimize_parameters()
     
     def get_current_errors(self):
         pass
