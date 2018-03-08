@@ -9,6 +9,10 @@ def create_model(opt):
         assert(opt.dataset_mode == 'aligned')
         from .pix2pix_model import Pix2PixModel
         model = Pix2PixModel()
+    elif opt.model == 'mask_pix2pix':
+        assert(opt.dataset_mode == 'aligned')
+        from .mask_pix2pix_model import MaskPix2PixModel
+        model = MaskPix2PixModel()
     elif opt.model == 'test':
         assert(opt.dataset_mode == 'single')
         from .test_model import TestModel
