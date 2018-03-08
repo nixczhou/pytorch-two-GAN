@@ -42,6 +42,7 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         if total_steps % opt.print_freq == 0:
             errors1, errors2 = model.get_current_errors()
             t = (time.time() - iter_start_time) / opt.batchSize
+            print('Phase 1: segmenation, Phase 2: detection errors')
             visualizer.print_current_errors(epoch, epoch_iter, errors1, t, t_data)
             visualizer.print_current_errors(epoch, epoch_iter, errors2, t, t_data)
             if opt.display_id > 0:
