@@ -10,8 +10,10 @@ class TwoAlignedDataset:
         opt1.phase = opt.phase1
         opt2 = opt
         opt2.phase = opt.phase2
-        self.dataset1 = AlignedDataset(opt)
-        self.dataset2 = AlignedDataset(opt)
+        self.dataset1 = AlignedDataset()
+        self.dataset1.initialize(opt1)
+        self.dataset2 = AlignedDataset()
+        self.dataset2.initialize(opt2)
 
     def __getitem__(self, index):
         item1 = self.dataset1[index]
