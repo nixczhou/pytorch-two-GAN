@@ -22,8 +22,11 @@ class TwoAlignedDataset:
         item2 = self.dataset2[index]
         # Warning and to do
         # randomness in dataset1 will not be the same as in dataset2
-        return {'A1': item1['A'], 'B1':item1['B'],
-        'A2': item2['A'], 'B2': item2['B']}
+        return {'dataset1_input':item1, 'dataset2_input':item2}
+        #return {'A1': item1['A'], 'B1':item1['B'],
+        #'A2': item2['A'], 'B2': item2['B'],
+        #'A_paths1':item1['A_paths'], 'B_paths1':item1['B_paths'],
+        #'A_paths2':item2['A_paths'], 'B_paths2':item2['B_paths']}
        
     def __len__(self):
         assert(len(self.dataset1) == len(self.dataset2))

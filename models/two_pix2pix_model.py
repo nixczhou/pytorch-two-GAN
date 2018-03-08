@@ -18,7 +18,15 @@ class TwoPix2PixModel:
         self.detection_GAN = Pix2PixModel()
         self.detection_GAN.initialize(opt)
 
-    def set_input(self, input1, input2):
+    def set_input(self, input):
+        """
+        return {'A1': item1['A'], 'B1':item1['B'],
+        'A2': item2['A'], 'B2': item2['B'],
+        'A_paths1':item1['A_paths'], 'B_paths1':item1['B_paths'],
+        'A_paths2':item2['A_paths'], 'B_paths2':item2['B_paths']}
+        """
+        input1 = input['dataset1_input']
+        input2 = input['dataset2_input']
         self.segmentation_GAN.set_input(input1)
         self.detection_GAN.set_input(input2)
 
