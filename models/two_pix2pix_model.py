@@ -9,9 +9,9 @@ from .pix2pix_model import Pix2PixModel
 from . import networks
 
 
-class MaskPix2PixModel:
+class TwoPix2PixModel:
     def name(self):
-        return 'MaskPix2PixModel'
+        return 'TwoPix2PixModel'
     def initialize(self, opt):
         self.segmentation_GAN = Pix2PixModel()
         self.segmentation_GAN.initialize(opt)
