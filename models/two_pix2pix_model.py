@@ -57,7 +57,7 @@ class TwoPix2PixModel:
         # @to output two errors
         error1 = self.segmentation_GAN.get_current_errors()
         error2 = self.detection_GAN.get_current_errors()
-        return error2
+        return error1, error2
     
     def get_current_visuals(self):
         vis1 = self.segmentation_GAN.get_current_visuals()

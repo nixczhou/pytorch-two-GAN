@@ -33,17 +33,20 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         model.set_input(data)
         model.optimize_parameters()
 
-        
+        """
         if total_steps % opt.display_freq == 0:
             save_result = total_steps % opt.update_html_freq == 0
             visualizer.display_current_results(model.get_current_visuals(), epoch, save_result)
+        """
         
         if total_steps % opt.print_freq == 0:
-            errors = model.get_current_errors()
+            errors1, errors2 = model.get_current_errors()
             t = (time.time() - iter_start_time) / opt.batchSize
-            visualizer.print_current_errors(epoch, epoch_iter, errors, t, t_data)
+            visualizer.print_current_errors(epoch, epoch_iter, errors1, t, t_data)
+            visualizer.print_current_errors(epoch, epoch_iter, errors2, t, t_data)
             if opt.display_id > 0:
-                visualizer.plot_current_errors(epoch, float(epoch_iter) / dataset_size, opt, errors)
+                visualizer.plot_current_errors(epoch, float(epoch_iter) / dataset_size, opt, errors1)
+                visualizer.plot_current_errors(epoch, float(epoch_iter) / dataset_size, opt, errors2)
         """
         if total_steps % opt.save_latest_freq == 0:
             print('saving the latest model (epoch %d, total_steps %d)' %
