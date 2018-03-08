@@ -21,6 +21,8 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
     iter_data_time = time.time()
     epoch_iter = 0
 
+    
+
     for i, data in enumerate(dataset):
         iter_start_time = time.time()
         if total_steps % opt.print_freq == 0:
@@ -29,7 +31,7 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
         total_steps += opt.batchSize
         epoch_iter += opt.batchSize
         model.set_input(data)
-        model.optimize_parameters()
+        #model.optimize_parameters()
 
         """
         if total_steps % opt.display_freq == 0:
@@ -61,3 +63,5 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
           (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
     model.update_learning_rate()
     """
+    print('End of epoch %d / %d \t Time Taken: %d sec' %
+          (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
