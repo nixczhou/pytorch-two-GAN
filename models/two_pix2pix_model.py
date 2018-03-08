@@ -54,10 +54,16 @@ class TwoPix2PixModel:
         self.detection_GAN.optimize_parameters()
     
     def get_current_errors(self):
-        pass
+        # @to output two errors
+        error1 = self.segmentation_GAN.get_current_errors()
+        error2 = self.detection_GAN.get_current_errors()
+        return error2
     
     def get_current_visuals(self):
-        pass
+        vis1 = self.segmentation_GAN.get_current_visuals()
+        vis2 = self.detection_GAN.get_current_visuals()
+        # @todo: only visualize detection result
+        return vis2
     
     def save(self, label):
         pass
