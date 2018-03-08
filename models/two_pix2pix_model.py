@@ -66,5 +66,10 @@ class TwoPix2PixModel:
         return vis2
     
     def save(self, label):
-        pass
+        label1 = 'seg_' + label
+        label2 = 'dect_' + label
+        self.segmentation_GAN.save(label1)
+        self.detection_GAN.save(label2)
+
+            
         
