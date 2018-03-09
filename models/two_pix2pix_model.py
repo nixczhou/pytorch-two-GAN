@@ -44,7 +44,7 @@ class TwoPix2PixModel:
             print('---------- Networks initialized -------------')
             networks.print_network(self.seg_netG)
             networks.print_network(self.detec_netG)       
-             print('-----------------------------------------------')        
+            print('-----------------------------------------------')        
 
     def set_input(self, input):
         """
@@ -53,10 +53,22 @@ class TwoPix2PixModel:
         'A_paths1':item1['A_paths'], 'B_paths1':item1['B_paths'],
         'A_paths2':item2['A_paths'], 'B_paths2':item2['B_paths']}
         """
-        input1 = input['dataset1_input']
-        input2 = input['dataset2_input']
-        self.segmentation_GAN.set_input(input1)
-        self.detection_GAN.set_input(input2)
+        if self.isTrain:
+            input1 = input['dataset1_input']
+            input2 = input['dataset2_input']
+            self.segmentation_GAN.set_input(input1)
+            self.detection_GAN.set_input(input2)
+        else:
+            # same as in Pix2PixModel
+            AtoB = self.opt.which_direction == 'AtoB'
+            input_A = input['A' if AtoB else 'B']
+            input_B = input['B' if AtoB else 'A']
+            if len(self.gpu_ids) > 0:
+                input_A = input_A.cuda(self.gpu_ids[0], async=True)
+                input_B = input_B.cuda(self.gpu_ids[0], async=True)
+            self.input_A = input_A
+            self.input_B = input_B
+            self.image_paths = input['A_paths' if AtoB else 'B_paths']        
 
     def forward(self):
         self.segmentation_GAN.forward()
