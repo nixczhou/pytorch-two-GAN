@@ -22,7 +22,8 @@ webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.na
 for i, data in enumerate(dataset):
     if i >= opt.how_many:
         break
-    model.set_input(data)
+    #model.set_input(data)
+    print(i)
     """
     model.test()
     visuals = model.get_current_visuals()
