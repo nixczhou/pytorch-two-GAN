@@ -27,15 +27,11 @@ class TwoPix2PixModel:
                 self.load_network(self.netD, 'D', opt.which_epoch)
         """
         
-        if self.isTrain:
-            opt1 = opt
-            opt1.gpu_ids = [0]
+        if self.isTrain:            
             self.segmentation_GAN = Pix2PixModel()
-            self.segmentation_GAN.initialize(opt1)
-            opt2 = opt
-            opt2.gpu_ids = [1]
+            self.segmentation_GAN.initialize(opt)            
             self.detection_GAN = Pix2PixModel()
-            self.detection_GAN.initialize(opt2)
+            self.detection_GAN.initialize(opt)
         else:
             self.seg_netG = networks.define_G(opt.input_nc, opt.output_nc, opt.ngf,                
                                       opt.which_model_netG, opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
