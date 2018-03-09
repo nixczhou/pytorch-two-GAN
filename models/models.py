@@ -10,7 +10,12 @@ def create_model(opt):
         from .pix2pix_model import Pix2PixModel
         model = Pix2PixModel()
     elif opt.model == 'two_pix2pix':
-        assert(opt.dataset_mode == 'two_aligned')
+        if opt.phase == 'train':
+            assert(opt.dataset_mode == 'two_aligned')
+        elif opt.phase == 'val' or opt.phase == 'test':
+            assert(opt.dataset_mode == 'aligned')
+        else:
+            print('Waring phase %s' % (opt.phase))
         from .two_pix2pix_model import TwoPix2PixModel
         model = TwoPix2PixModel()
     elif opt.model == 'test':
