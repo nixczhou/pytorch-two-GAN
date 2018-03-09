@@ -24,11 +24,10 @@ for i, data in enumerate(dataset):
         break
     model.set_input(data)    
     model.test()
-    """
-    visuals = model.get_current_visuals()
+    
+    visuals = model.get_current_visuals()    
     img_path = model.get_image_paths()
     print('%04d: process image... %s' % (i, img_path))
-    visualizer.save_images(webpage, visuals, img_path, aspect_ratio=opt.aspect_ratio)
-    """
+    visualizer.save_images(webpage, visuals, img_path, aspect_ratio=opt.aspect_ratio)   
 
-#webpage.save()
+webpage.save()

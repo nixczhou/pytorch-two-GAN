@@ -46,13 +46,7 @@ class TwoPix2PixModel:
             networks.print_network(self.detec_netG)       
             print('-----------------------------------------------')        
 
-    def set_input(self, input):
-        """
-        return {'A1': item1['A'], 'B1':item1['B'],
-        'A2': item2['A'], 'B2': item2['B'],
-        'A_paths1':item1['A_paths'], 'B_paths1':item1['B_paths'],
-        'A_paths2':item2['A_paths'], 'B_paths2':item2['B_paths']}
-        """
+    def set_input(self, input):        
         if self.isTrain:
             input1 = input['dataset1_input']
             input2 = input['dataset2_input']
@@ -77,14 +71,15 @@ class TwoPix2PixModel:
     def test(self):
         # forces outputs to not require gradients
         self.real_A = Variable(self.input_A, volatile = True)
-        self.fake_B1 = self.seg_netG(self.real_A)
+        self.fake_B = self.seg_netG(self.real_A)
         # @to do modify fake_B1
-        self.fake_B2 = self.detec_netG(self.fake_B1)
+        #self.fake_B2 = self.detec_netG(self.fake_B1)
         self.real_B = Variable(self.input_B, volatile = True)
        
     
     def get_image_paths(self):
-        pass
+        assert not self.isTrain
+        return self.image_paths
     
     def backward_D(self):
         self.segmentation_GAN.backward_D()
@@ -106,11 +101,18 @@ class TwoPix2PixModel:
         return error1, error2
     
     def get_current_visuals(self):
-        vis1 = self.segmentation_GAN.get_current_visuals()
-        vis2 = self.detection_GAN.get_current_visuals()
-        # @todo: only visualize detection result
-        return vis2
-    
+        if self.isTrain:
+            vis1 = self.segmentation_GAN.get_current_visuals()
+            vis2 = self.detection_GAN.get_current_visuals()
+            # @todo: only visualize detection result
+            return vis2
+        else:
+            # same as in Pix2PixModel
+            real_A = util.tensor2im(self.real_A.data)
+            fake_B = util.tensor2im(self.fake_B.data)
+            real_B = util.tensor2im(self.real_B.data)
+            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('real_B', real_B)])           
+            
     def save(self, label):
         label1 = 'seg_%s' % (label)
         label2 = 'detec_%s' % (label)
