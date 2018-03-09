@@ -75,7 +75,13 @@ class TwoPix2PixModel:
         self.detection_GAN.forward()
    
     def test(self):
-        pass
+        # forces outputs to not require gradients
+        self.real_A = Variable(self.input_A, volatile = True)
+        self.fake_B1 = self.seg_netG(self.real_A)
+        # @to do modify fake_B1
+        self.fake_B2 = self.detec_netG(self.fake_B1)
+        self.real_B = Variable(self.input_B, volatile = True)
+       
     
     def get_image_paths(self):
         pass

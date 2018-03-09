@@ -22,10 +22,9 @@ webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.na
 for i, data in enumerate(dataset):
     if i >= opt.how_many:
         break
-    model.set_input(data)
-    
-    """
+    model.set_input(data)    
     model.test()
+    """
     visuals = model.get_current_visuals()
     img_path = model.get_image_paths()
     print('%04d: process image... %s' % (i, img_path))
