@@ -13,10 +13,25 @@ class TwoPix2PixModel:
     def name(self):
         return 'TwoPix2PixModel'
     def initialize(self, opt):
-        self.segmentation_GAN = Pix2PixModel()
-        self.segmentation_GAN.initialize(opt)
-        self.detection_GAN = Pix2PixModel()
-        self.detection_GAN.initialize(opt)
+        """
+        if not self.isTrain or opt.continue_train:
+            self.load_network(self.netG, 'G', opt.which_epoch)
+            if self.isTrain:
+                self.load_network(self.netD, 'D', opt.which_epoch)
+        """
+        self.isTrain = opt.isTrain
+        if self.isTrain:
+            self.segmentation_GAN = Pix2PixModel()
+            self.segmentation_GAN.initialize(opt)
+            self.detection_GAN = Pix2PixModel()
+            self.detection_GAN.initialize(opt)
+        else:
+            pass
+
+
+
+
+        
 
     def set_input(self, input):
         """
@@ -70,6 +85,11 @@ class TwoPix2PixModel:
         label2 = 'dect_%s' % (label)
         self.segmentation_GAN.save(label1)
         self.detection_GAN.save(label2)
+    
+    # update learning rate (called once every epoch)
+    def update_learning_rate(self):
+        self.segmentation_GAN.update_learning_rate()
+        self.detection_GAN.update_learning_rate()
 
             
         
