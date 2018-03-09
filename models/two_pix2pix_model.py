@@ -29,11 +29,11 @@ class TwoPix2PixModel:
         
         if self.isTrain:
             opt1 = opt
-            opt1.gpu_ids = 0
+            opt1.gpu_ids = [0]
             self.segmentation_GAN = Pix2PixModel()
             self.segmentation_GAN.initialize(opt1)
             opt2 = opt
-            opt2.gpu_ids = 1
+            opt2.gpu_ids = [1]
             self.detection_GAN = Pix2PixModel()
             self.detection_GAN.initialize(opt2)
         else:
