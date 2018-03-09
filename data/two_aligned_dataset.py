@@ -3,17 +3,17 @@ from aligned_dataset import AlignedDataset
 
 class TwoAlignedDataset:
     def initialize(self, opt):
-        #self.opt = opt
-        #self.root = opt.dataroot
+        assert opt.isTrain == True       
         # set different phases (folders of image)
         opt1 = opt
         opt1.phase = opt.phase1
-        opt1.dataset_model = 'aligned'
+        opt1.dataset_model = 'aligned'        
+        self.dataset1 = AlignedDataset()
+        self.dataset1.initialize(opt1)
+
         opt2 = opt
         opt2.phase = opt.phase2
         opt2.dataset_model = 'aligned'
-        self.dataset1 = AlignedDataset()
-        self.dataset1.initialize(opt1)
         self.dataset2 = AlignedDataset()
         self.dataset2.initialize(opt2)
 
