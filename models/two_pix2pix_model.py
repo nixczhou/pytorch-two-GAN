@@ -71,10 +71,9 @@ class TwoPix2PixModel:
     def test(self):
         # forces outputs to not require gradients
         self.real_A = Variable(self.input_A, volatile = True)
-        self.fake_B = self.detec_netG(self.real_A)
-        # @to do modify fake_B1
-        #self.fake_B2 = self.detec_netG(self.fake_B1)
-        self.real_B = Variable(self.input_B, volatile = True)
+        self.fake_B = self.seg_netG(self.real_A)
+        self.fake_C = self.detec_netG(self.real_A)            
+        self.real_C = Variable(self.input_B, volatile = True)
        
     
     def get_image_paths(self):
@@ -108,10 +107,17 @@ class TwoPix2PixModel:
             return vis2
         else:
             # same as in Pix2PixModel
+            """
+            self.real_A = Variable(self.input_A, volatile = True)
+            self.fake_B = self.seg_netG(self.real_A)
+            self.fake_C = self.detec_netG(self.real_A)            
+            self.real_C = Variable(self.input_B, volatile = True)
+            """
             real_A = util.tensor2im(self.real_A.data)
             fake_B = util.tensor2im(self.fake_B.data)
-            real_B = util.tensor2im(self.real_B.data)
-            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('real_B', real_B)])           
+            fake_C = util.tensor2im(self.fake_C.data)
+            real_C = util.tensor2im(self.real_C.data)
+            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_C', fake_C), ('real_C', real_C)])           
             
     def save(self, label):
         label1 = 'seg_%s' % (label)
