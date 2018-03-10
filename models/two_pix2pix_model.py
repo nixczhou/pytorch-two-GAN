@@ -70,11 +70,21 @@ class TwoPix2PixModel:
    
     def test(self):
         # forces outputs to not require gradients
+        """
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
         self.fake_C = self.detec_netG(self.real_A)            
         self.real_C = Variable(self.input_B, volatile = True)
-       
+        """
+        self.real_A = Variable(self.input_A, volatile = True)
+        self.fake_B = self.seg_netG(self.real_A)
+        fake_B = self.fake_B.data
+        input_A = self.input_A
+        fake_B = torch.cat((fake_B, fake_B, fake_B))
+        masked_A = torch.mul(input_A, fake_B)
+        masked_A = Variable(masked_A, volatile = True)
+        self.fake_C = self.detec_netG(masked_A)
+        self.real_C = Variable(self.input_B, volatile = True)      
     
     def get_image_paths(self):
         assert not self.isTrain
