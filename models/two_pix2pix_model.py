@@ -128,7 +128,7 @@ class TwoPix2PixModel:
             fake_B = util.tensor2im(self.fake_B.data)
             fake_C = util.tensor2im(self.fake_C.data)
             real_C = util.tensor2im(self.real_C.data)
-            masked_A = util.tensor2im(self.masked_A)
+            masked_A = util.tensor2im(self.masked_A.data)
             return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_C', fake_C), ('real_C', real_C)],
         ['masked_A', masked_A])           
             
