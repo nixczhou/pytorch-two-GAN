@@ -83,6 +83,7 @@ class TwoPix2PixModel:
         fake_B = torch.cat((fake_B, fake_B, fake_B))
         masked_A = torch.mul(input_A, fake_B)
         masked_A = Variable(masked_A, volatile = True)
+        self.masked_A = masked_A
         self.fake_C = self.detec_netG(masked_A)
         self.real_C = Variable(self.input_B, volatile = True)      
     
@@ -127,7 +128,9 @@ class TwoPix2PixModel:
             fake_B = util.tensor2im(self.fake_B.data)
             fake_C = util.tensor2im(self.fake_C.data)
             real_C = util.tensor2im(self.real_C.data)
-            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_C', fake_C), ('real_C', real_C)])           
+            masked_A = util.tensor2im(self.masked_A)
+            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_C', fake_C), ('real_C', real_C)],
+        ['masked_A', masked_A])           
             
     def save(self, label):
         label1 = 'seg_%s' % (label)
