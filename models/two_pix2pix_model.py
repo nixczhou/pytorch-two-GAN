@@ -81,6 +81,7 @@ class TwoPix2PixModel:
         fake_B = self.fake_B.data
         input_A = self.input_A
         fake_B = torch.cat((fake_B, fake_B, fake_B))
+        fake_B = (fake_B + 1.0)/2.0
         masked_A = torch.mul(input_A, fake_B)
         masked_A = Variable(masked_A, volatile = True)
         self.masked_A = masked_A
