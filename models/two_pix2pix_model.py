@@ -22,7 +22,8 @@ class TwoPix2PixModel:
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         
         # joint training or independent training
-        self.isJointTrain = opt.joint_train != 0
+        if self.isTrain:
+            self.isJointTrain = opt.joint_train != 0
         """
         if not self.isTrain or opt.continue_train:
             self.load_network(self.netG, 'G', opt.which_epoch)
