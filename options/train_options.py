@@ -31,6 +31,6 @@ class TrainOptions(BaseOptions):
         # parameters for two_pix2pix
         self.parser.add_argument('--phase1', type=str, default='train_phase_1', help='train_1, val_1, test_1, etc, two_pix2pix only')
         self.parser.add_argument('--phase2', type=str, default='train_phase_2', help='train_1, val_1, test_1, etc, two_pix2pix only')
-        self.parser.add_argument('--joint_train', type=bool, default=False, help='joint train segmentation and detection network')
+        self.parser.add_argument('--joint_train', type=int, default=0, help='joint train segmentation and detection network')
 
         self.isTrain = True
