@@ -20,6 +20,9 @@ class TwoPix2PixModel:
         self.isTrain = opt.isTrain
         self.Tensor = torch.cuda.FloatTensor if self.gpu_ids else torch.Tensor
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        
+        # joint training or independent training
+        self.isJointTrain = opt.joint_train
         """
         if not self.isTrain or opt.continue_train:
             self.load_network(self.netG, 'G', opt.which_epoch)
@@ -65,8 +68,11 @@ class TwoPix2PixModel:
             self.image_paths = input['A_paths' if AtoB else 'B_paths']        
 
     def forward(self):
-        self.segmentation_GAN.forward()
-        self.detection_GAN.forward()
+        if self.isJointTrain:
+            pass
+        else:
+            self.segmentation_GAN.forward()
+            self.detection_GAN.forward()
    
     def test(self):
         # forces outputs to not require gradients
@@ -80,14 +86,14 @@ class TwoPix2PixModel:
         self.fake_B = self.seg_netG(self.real_A)
         fake_B = self.fake_B.data
         input_A = self.input_A   
-            
+
         # composite image for detection GAN
         fake_B = (fake_B + 1.0)/2.0  # --> [0, 1]
         input_A = (input_A + 1.0)/2.0 # --> [0, 1]
         masked_A = torch.mul(input_A, fake_B)
         masked_A = masked_A * 2.0 - 1   # normalize to [-1, 1]
 
-        masked_A = Variable(masked_A, volatile = True)
+        masked_A = Variable(masked_A, volatile = True) # for debug
         self.masked_A = masked_A
         self.fake_C = self.detec_netG(masked_A)
         self.real_C = Variable(self.input_B, volatile = True)      
@@ -97,17 +103,26 @@ class TwoPix2PixModel:
         return self.image_paths
     
     def backward_D(self):
-        self.segmentation_GAN.backward_D()
-        self.detection_GAN.backward_D()
+        if self.isJointTrain:
+            pass
+        else:
+            self.segmentation_GAN.backward_D()
+            self.detection_GAN.backward_D()
     
     def backward_G(self):
-        self.segmentation_GAN.backward_G()
-        self.detection_GAN.backward_G()
+        if self.isJointTrain:
+            pass
+        else:
+            self.segmentation_GAN.backward_G()
+            self.detection_GAN.backward_G()
     
     def optimize_parameters(self):
-        # optimize parameter independently
-        self.segmentation_GAN.optimize_parameters()
-        self.detection_GAN.optimize_parameters()
+        if self.isJointTrain:
+            pass
+        else:
+            # optimize parameter independently
+            self.segmentation_GAN.optimize_parameters()
+            self.detection_GAN.optimize_parameters()
     
     def get_current_errors(self):
         # @to output two errors
