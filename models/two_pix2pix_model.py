@@ -70,25 +70,32 @@ class TwoPix2PixModel:
 
     def forward(self):
         if self.isJointTrain:
-            pass
+            # forward segmentation network
+            self.real_A = Variable(self.segmentation_GAN.input_A)
+            self.fake_B = self.segmentation_GAN.netG(self.real_A)
+            self.real_B = Variable(self.segmentation_GAN.input_B)
+
+            # mask and input image composition            
+            fake_B = (self.fake_B + 1.0)/2.0
+            input_A = (self.real_A + 1.0)/2.0
+            self.masked_A = (fake_B * input_A) * 2.0 - 1
+
+            # pass composition to detection network
+            self.real_C = Variable(self.detection_GAN.input_A)
+            self.fake_C = self.masked_A
+            self.real_D = Variable(self.detection_GAN.input_B)
+            self.fake_D = self.detection_GAN.netG(self.masked_A)
         else:
             self.segmentation_GAN.forward()
             self.detection_GAN.forward()
    
     def test(self):
-        # forces outputs to not require gradients
-        """
-        self.real_A = Variable(self.input_A, volatile = True)
-        self.fake_B = self.seg_netG(self.real_A)
-        self.fake_C = self.detec_netG(self.real_A)            
-        self.real_C = Variable(self.input_B, volatile = True)
-        """
+        # forces outputs to not require gradients       
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
         fake_B = (self.fake_B + 1.0)/2.0
         input_A = (self.real_A + 1.0)/2.0
-
-        self.masked_A = (fake_B * input_A) * 2.0 - 1
+        self.fake_C = (fake_B * input_A) * 2.0 - 1
         """
         fake_B = self.fake_B.data
         input_A = self.input_A   
@@ -101,9 +108,9 @@ class TwoPix2PixModel:
 
         masked_A = Variable(masked_A, volatile = True) # for debug
         self.masked_A = masked_A
-        """
-        self.fake_C = self.detec_netG(self.masked_A)
-        self.real_C = Variable(self.input_B, volatile = True)      
+        """       
+        self.fake_D = self.detec_netG(self.fake_C)
+        self.real_D = Variable(self.input_B, volatile = True)      
     
     def get_image_paths(self):
         assert not self.isTrain
@@ -152,12 +159,12 @@ class TwoPix2PixModel:
             self.real_C = Variable(self.input_B, volatile = True)
             """
             real_A = util.tensor2im(self.real_A.data)
-            fake_B = util.tensor2im(self.fake_B.data)
+            fake_B = util.tensor2im(self.fake_B.data)            
+            fake_D = util.tensor2im(self.fake_D.data)
+            real_D = util.tensor2im(self.real_D.data)            
             fake_C = util.tensor2im(self.fake_C.data)
-            real_C = util.tensor2im(self.real_C.data)
-            masked_A = util.tensor2im(self.masked_A.data)
-            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_C', fake_C), ('real_C', real_C),
-            ('masked_A', masked_A)])
+            return OrderedDict([('real_A', real_A), ('fake_B', fake_B), ('fake_D', fake_D), ('real_D', real_D),
+            ('fake_C', fake_C)])
                  
             
     def save(self, label):
