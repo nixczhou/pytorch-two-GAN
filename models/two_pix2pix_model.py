@@ -84,6 +84,11 @@ class TwoPix2PixModel:
         """
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
+        fake_B = (self.fake_B + 1.0)/2.0
+        input_A = (self.input_A + 1.0)/2.0
+
+        self.masked_A = (fake_B * input_A) * 2.0 - 1
+        """
         fake_B = self.fake_B.data
         input_A = self.input_A   
 
@@ -95,6 +100,7 @@ class TwoPix2PixModel:
 
         masked_A = Variable(masked_A, volatile = True) # for debug
         self.masked_A = masked_A
+        """
         self.fake_C = self.detec_netG(masked_A)
         self.real_C = Variable(self.input_B, volatile = True)      
     
