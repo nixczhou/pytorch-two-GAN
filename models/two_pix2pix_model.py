@@ -102,7 +102,7 @@ class TwoPix2PixModel:
         masked_A = Variable(masked_A, volatile = True) # for debug
         self.masked_A = masked_A
         """
-        self.fake_C = self.detec_netG(masked_A)
+        self.fake_C = self.detec_netG(self.masked_A)
         self.real_C = Variable(self.input_B, volatile = True)      
     
     def get_image_paths(self):
