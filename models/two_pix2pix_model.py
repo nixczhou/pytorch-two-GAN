@@ -79,6 +79,8 @@ class TwoPix2PixModel:
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
         fake_B = self.fake_B.data
+        print fake_B
+        raise Exception("here")
         input_A = self.input_A
         fake_B = torch.cat((fake_B, fake_B, fake_B))
         fake_B = (fake_B + 1.0)/2.0
