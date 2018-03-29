@@ -124,7 +124,26 @@ class TwoPix2PixModel:
     
     def backward_G(self):
         if self.isJointTrain:
-            pass
+            seg_GAN = self.segmentation_GAN
+            # First, G(A) should fake discriminator
+            fake_AB = torch.cat((self.real_A, self.fake_B), 1)
+            pred_fake = seg_GAN.netD(fake_AB)
+            self.loss_segment_G_GAN = seg_GAN.criterionGAN(pred_fake, True)
+
+            # Second, G(A) = B
+            self.loss_segment_G_L1 = seg_GAN.criterionL1(self.fake_B, self.real_B) * seg_GAN.opt.lambda_A
+
+            detect_GAN = self.detection_GAN
+            # Third, G(fakeC) should fake discriminator
+            fake_CD = torch.cat((self.real_C, self.fake_D), 1)
+            pred_fake = detect_GAN.netD(fake_CD)
+            self.loss_detection_G_GAN = detect_GAN.criterionGAN(pred_fake, True)
+
+            # Fourth, G(fakeC) = D 
+            self.loss_detection_G_L1 = detect_GAN.criterionL1(self.fake_D, self.real_D) * detect_GAN.opt.lambda_A
+
+            self.loss_G =  self.loss_segment_G_GAN + self.loss_segment_G_L1 + self.loss_detection_G_GAN + self.loss_detection_G_L1
+            
         else:
             self.segmentation_GAN.backward_G()
             self.detection_GAN.backward_G()
