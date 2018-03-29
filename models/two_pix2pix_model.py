@@ -166,10 +166,8 @@ class TwoPix2PixModel:
             # Fourth, G(fakeC) = D 
             self.detection_GAN.loss_G_L1 = detect_GAN.criterionL1(self.fake_D, self.real_D) * detect_GAN.opt.lambda_A
 
-            self.loss_G =  self.segmentation_GAN.loss_G_GAN + 
-            self.segmentation_GAN.loss_G_L1 + 
-            self.detection_GAN.loss_G_GAN + 
-            self.detection_GAN.loss_G_L1                        
+            self.loss_G =  self.segmentation_GAN.loss_G_GAN + self.segmentation_GAN.loss_G_L1 + self.detection_GAN.loss_G_GAN + self.detection_GAN.loss_G_L1
+            self.loss_G.backward()
         else:
             self.segmentation_GAN.backward_G()
             self.detection_GAN.backward_G()
