@@ -79,12 +79,13 @@ class TwoPix2PixModel:
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
         fake_B = self.fake_B.data
-        print fake_B
-        raise Exception("here")
-        input_A = self.input_A
-        fake_B = torch.cat((fake_B, fake_B, fake_B))
-        fake_B = (fake_B + 1.0)/2.0
+        input_A = self.input_A       
+        # composite image for detection GAN
+        fake_B = (fake_B + 1.0)/2.0  # --> [0, 1]
+        input_A = (input_A + 1.0)/2.0 # --> [0, 1]
         masked_A = torch.mul(input_A, fake_B)
+        masked_A = masked_A * 2.0 - 1   # normalize to [-1, 1]
+
         masked_A = Variable(masked_A, volatile = True)
         self.masked_A = masked_A
         self.fake_C = self.detec_netG(masked_A)
