@@ -117,7 +117,31 @@ class TwoPix2PixModel:
     
     def backward_D(self):
         if self.isJointTrain:
-            pass
+            # segmentation network
+            seg_GAN = self.segmentation_GAN
+            # 1. fake
+            fake_AB = seg_GAN.fake_AB_pool.query(torch.cat(self.real_A, self.fake_B), 1)
+            pred_fake = seg_GAN.netD(fake_AB.detach())
+            self.segmentation_GAN.loss_D_fake = seg_GAN.criterionGAN(pred_fake, False)
+            # 2. feal
+            real_AB = torch.cat((self.real_A, self.real_B), 1)
+            pred_real = seg_GAN.netD(real_AB)
+            self.segmentation_GAN.loss_D_real = seg_GAN.criterionGAN(pred_real, True)
+
+            # detection network
+            detect_GAN = self.detection_GAN
+            fake_CD = detect_GAN.fake_AB_pool.query(torch(self.real_C, self.fake_D), 1)
+            pred_fake = detect_GAN.netD(fake_CD.detach())
+            self.detection_GAN.loss_D_fake = detect_GAN.criterionGAN(pred_fake, False)
+
+            real_CD = torch.cat((self.real_C, self.real_D), 1)
+            pred_real = detect_GAN.netD(real_CD)
+            self.detection_GAN.loss_D_real = detect_GAN.criterionGAN(pred_real, True)
+            
+            # combined loss
+            self.loss_D = (self.segmentation_GAN.loss_D_fake + self.segmentation_GAN.loss_D_real + 
+            self.detection_GAN.loss_D_fake + self.detection_GAN.loss_D_real) * 0.5
+            self.loss_D.backward()
         else:
             self.segmentation_GAN.backward_D()
             self.detection_GAN.backward_D()
@@ -128,29 +152,46 @@ class TwoPix2PixModel:
             # First, G(A) should fake discriminator
             fake_AB = torch.cat((self.real_A, self.fake_B), 1)
             pred_fake = seg_GAN.netD(fake_AB)
-            self.loss_segment_G_GAN = seg_GAN.criterionGAN(pred_fake, True)
+            self.segmentation_GAN.loss_G_GAN = seg_GAN.criterionGAN(pred_fake, True)
 
             # Second, G(A) = B
-            self.loss_segment_G_L1 = seg_GAN.criterionL1(self.fake_B, self.real_B) * seg_GAN.opt.lambda_A
+            self.segmentation_GAN.loss_G_L1 = seg_GAN.criterionL1(self.fake_B, self.real_B) * seg_GAN.opt.lambda_A
 
             detect_GAN = self.detection_GAN
             # Third, G(fakeC) should fake discriminator
             fake_CD = torch.cat((self.real_C, self.fake_D), 1)
             pred_fake = detect_GAN.netD(fake_CD)
-            self.loss_detection_G_GAN = detect_GAN.criterionGAN(pred_fake, True)
+            self.detection_GAN.loss_G_GAN = detect_GAN.criterionGAN(pred_fake, True)
 
             # Fourth, G(fakeC) = D 
-            self.loss_detection_G_L1 = detect_GAN.criterionL1(self.fake_D, self.real_D) * detect_GAN.opt.lambda_A
+            self.detection_GAN.loss_G_L1 = detect_GAN.criterionL1(self.fake_D, self.real_D) * detect_GAN.opt.lambda_A
 
-            self.loss_G =  self.loss_segment_G_GAN + self.loss_segment_G_L1 + self.loss_detection_G_GAN + self.loss_detection_G_L1
-            
+            self.loss_G =  self.segmentation_GAN.loss_G_GAN + 
+            self.segmentation_GAN.loss_G_L1 + 
+            self.detection_GAN.loss_G_GAN + 
+            self.detection_GAN.loss_G_L1                        
         else:
             self.segmentation_GAN.backward_G()
             self.detection_GAN.backward_G()
     
     def optimize_parameters(self):
         if self.isJointTrain:
-            pass
+            self.forward()
+
+            # discriminator           
+            self.segmentation_GAN.optimizer_D.zero_grad()
+            self.detection_GAN.optimizer_D.zero_grad()
+            self.backward_D()
+            self.segmentation_GAN.optimizer_D.step()
+            self.detection_GAN.optimizer_D.step()
+
+            # generator
+            self.segmentation_GAN.optimizer_G.zero_grad()
+            self.detection_GAN.optimizer_G.zero_grad()
+            self.backward_G()
+            self.segmentation_GAN.optimizer_G.step()
+            self.detection_GAN.optimizer_G.step()
+
         else:
             # optimize parameter independently
             self.segmentation_GAN.optimize_parameters()
