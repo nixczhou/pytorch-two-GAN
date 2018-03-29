@@ -79,7 +79,8 @@ class TwoPix2PixModel:
         self.real_A = Variable(self.input_A, volatile = True)
         self.fake_B = self.seg_netG(self.real_A)
         fake_B = self.fake_B.data
-        input_A = self.input_A       
+        input_A = self.input_A   
+            
         # composite image for detection GAN
         fake_B = (fake_B + 1.0)/2.0  # --> [0, 1]
         input_A = (input_A + 1.0)/2.0 # --> [0, 1]
