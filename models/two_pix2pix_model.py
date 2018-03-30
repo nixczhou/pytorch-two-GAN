@@ -23,13 +23,7 @@ class TwoPix2PixModel:
         
         # joint training or independent training
         if self.isTrain:
-            self.isJointTrain = opt.joint_train != 0
-        """
-        if not self.isTrain or opt.continue_train:
-            self.load_network(self.netG, 'G', opt.which_epoch)
-            if self.isTrain:
-                self.load_network(self.netD, 'D', opt.which_epoch)
-        """
+            self.isJointTrain = opt.joint_train != 0        
         
         if self.isTrain:            
             self.segmentation_GAN = Pix2PixModel()
@@ -48,7 +42,16 @@ class TwoPix2PixModel:
             print('---------- Networks initialized -------------')
             networks.print_network(self.seg_netG)
             networks.print_network(self.detec_netG)       
-            print('-----------------------------------------------')        
+            print('-----------------------------------------------')
+
+        # load pre-trained network
+        if not self.isTrain or opt.continue_train:
+            self.load_network(self.segmentation_GAN.netG, 'G', opt.which_epoch, 'seg')
+            self.load_network(self.detection_GAN, 'G', opt.which_epoch, 'detec')
+            if self.isTrain:
+                self.load_network(self.segmentation_GAN.netD, 'D', opt.which_epoch, 'seg')
+                self.load_network(self.detect_GAN.netD, 'D', opt.which_epoch, 'detec')
+
 
     def set_input(self, input):        
         if self.isTrain:
