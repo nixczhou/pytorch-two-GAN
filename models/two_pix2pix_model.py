@@ -120,7 +120,10 @@ class TwoPix2PixModel:
             # segmentation network
             seg_GAN = self.segmentation_GAN
             # 1. fake
-            fake_AB = seg_GAN.fake_AB_pool.query(torch.cat(self.real_A, self.fake_B), 1)
+	    print self.real_A.data
+            print self.fake_B.data
+            raise Exception("Here")
+            fake_AB = seg_GAN.fake_AB_pool.query(torch.cat((self.real_A, self.fake_B)), 1)
             pred_fake = seg_GAN.netD(fake_AB.detach())
             self.segmentation_GAN.loss_D_fake = seg_GAN.criterionGAN(pred_fake, False)
             # 2. feal
@@ -130,7 +133,7 @@ class TwoPix2PixModel:
 
             # detection network
             detect_GAN = self.detection_GAN
-            fake_CD = detect_GAN.fake_AB_pool.query(torch(self.real_C, self.fake_D), 1)
+            fake_CD = detect_GAN.fake_AB_pool.query(torch.cat((self.real_C, self.fake_D)), 1)
             pred_fake = detect_GAN.netD(fake_CD.detach())
             self.detection_GAN.loss_D_fake = detect_GAN.criterionGAN(pred_fake, False)
 
