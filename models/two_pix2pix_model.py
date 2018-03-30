@@ -73,11 +73,7 @@ class TwoPix2PixModel:
             # forward segmentation network
             self.real_A = Variable(self.segmentation_GAN.input_A)
             self.fake_B = self.segmentation_GAN.netG(self.real_A)
-            self.real_B = Variable(self.segmentation_GAN.input_B)
-
-            print self.fake_B.data
-            print self.real_B.data
-            raise Exception("forward")
+            self.real_B = Variable(self.segmentation_GAN.input_B)           
 
             # mask and input image composition            
             fake_B = (self.fake_B + 1.0)/2.0
@@ -127,7 +123,7 @@ class TwoPix2PixModel:
 	    print self.real_A.data
             print self.fake_B.data
             raise Exception("Here")
-            fake_AB = seg_GAN.fake_AB_pool.query(torch.cat((self.real_A, self.fake_B)), 1)
+            fake_AB = seg_GAN.fake_AB_pool.query(torch.cat((self.real_A, self.fake_B), 1).data)
             pred_fake = seg_GAN.netD(fake_AB.detach())
             self.segmentation_GAN.loss_D_fake = seg_GAN.criterionGAN(pred_fake, False)
             # 2. feal
@@ -137,7 +133,7 @@ class TwoPix2PixModel:
 
             # detection network
             detect_GAN = self.detection_GAN
-            fake_CD = detect_GAN.fake_AB_pool.query(torch.cat((self.real_C, self.fake_D)), 1)
+            fake_CD = detect_GAN.fake_AB_pool.query(torch.cat((self.real_C, self.fake_D), 1).data)
             pred_fake = detect_GAN.netD(fake_CD.detach())
             self.detection_GAN.loss_D_fake = detect_GAN.criterionGAN(pred_fake, False)
 
