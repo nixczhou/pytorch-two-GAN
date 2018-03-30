@@ -25,7 +25,9 @@ class TwoPix2PixModel:
         if self.isTrain:
             self.isJointTrain = opt.joint_train != 0        
         
-        if self.isTrain:            
+        if self.isTrain:
+            init_opt = opt
+            init_opt.continue_train = False    # prevent pre-load model            
             self.segmentation_GAN = Pix2PixModel()
             self.segmentation_GAN.initialize(opt)            
             self.detection_GAN = Pix2PixModel()
