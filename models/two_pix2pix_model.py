@@ -75,8 +75,8 @@ class TwoPix2PixModel:
             self.fake_B = self.segmentation_GAN.netG(self.real_A)
             self.real_B = Variable(self.segmentation_GAN.input_B)
 
-            print self.fake_B
-            print self.real_B
+            print self.fake_B.data
+            print self.real_B.data
             raise Exception("forward")
 
             # mask and input image composition            
