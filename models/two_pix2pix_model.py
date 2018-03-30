@@ -47,7 +47,7 @@ class TwoPix2PixModel:
             print('-----------------------------------------------')
 
         # load pre-trained network
-        if not self.isTrain or opt.continue_train:
+        if opt.continue_train:
             self.load_network(self.segmentation_GAN.netG, 'G', opt.which_epoch, 'seg')
             self.load_network(self.detection_GAN, 'G', opt.which_epoch, 'detec')
             if self.isTrain:
