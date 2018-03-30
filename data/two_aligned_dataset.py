@@ -1,5 +1,6 @@
 # two aligned dataset
 from aligned_dataset import AlignedDataset
+import random
 
 class TwoAlignedDataset:
     def initialize(self, opt):
@@ -17,16 +18,19 @@ class TwoAlignedDataset:
         self.dataset2 = AlignedDataset()
         self.dataset2.initialize(opt2)
 
-    def __getitem__(self, index):
-        item1 = self.dataset1[index]
-        item2 = self.dataset2[index]
-        # Warning and to do
-        # randomness in dataset1 will not be the same as in dataset2
+    def __getitem__(self, index):        
+        # make crop and flip same in two datasets
+        w = self.dataset1.opt.loadSize
+        h = self.dataset1.opt.loadSize
+        w_offset = random.randint(0, max(0, w - self.dataset1.opt.fineSize - 1))
+        h_offset = random.randint(0, max(0, h - self.dataset1.opt.fineSize - 1))
+        is_flip = random.random() < 0.5        
+        item1 = self.dataset1.get_item(index, w_offset, h_offset, is_flip)
+        item2 = self.dataset2.get_item(index, w_offset, h_offset, is_flip)
+        #item1 = self.dataset1[index]
+        #item2 = self.dataset2[index]        
         return {'dataset1_input':item1, 'dataset2_input':item2}
-        #return {'A1': item1['A'], 'B1':item1['B'],
-        #'A2': item2['A'], 'B2': item2['B'],
-        #'A_paths1':item1['A_paths'], 'B_paths1':item1['B_paths'],
-        #'A_paths2':item2['A_paths'], 'B_paths2':item2['B_paths']}
+       
        
     def __len__(self):
         assert(len(self.dataset1) == len(self.dataset2))
