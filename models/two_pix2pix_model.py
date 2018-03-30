@@ -119,10 +119,7 @@ class TwoPix2PixModel:
         if self.isJointTrain:
             # segmentation network
             seg_GAN = self.segmentation_GAN
-            # 1. fake
-	    print self.real_A.data
-            print self.fake_B.data
-            raise Exception("Here")
+            # 1. fake	   
             fake_AB = seg_GAN.fake_AB_pool.query(torch.cat((self.real_A, self.fake_B), 1).data)
             pred_fake = seg_GAN.netD(fake_AB.detach())
             self.segmentation_GAN.loss_D_fake = seg_GAN.criterionGAN(pred_fake, False)
