@@ -2,6 +2,8 @@
 
 <br><br><br>
 
+# This code is for soccer field marking detction. The code is modified from https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+
 # CycleGAN and pix2pix in PyTorch
 
 This is our ongoing PyTorch implementation for both unpaired and paired image-to-image translation.
