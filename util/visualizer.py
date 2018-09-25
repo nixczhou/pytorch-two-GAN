@@ -17,8 +17,9 @@ class Visualizer():
         self.opt = opt
         self.saved = False
         if self.display_id > 0:
-            import visdom
-            self.vis = visdom.Visdom(port=opt.display_port)
+            print('visdom is disabled')
+            #import visdom
+            #self.vis = visdom.Visdom(port=opt.display_port)
 
         if self.use_html:
             self.web_dir = os.path.join(opt.checkpoints_dir, opt.name, 'web')
@@ -64,16 +65,16 @@ class Visualizer():
                 if label_html_row != '':
                     label_html += '<tr>%s</tr>' % label_html_row
                 # pane col = image row
-                self.vis.images(images, nrow=ncols, win=self.display_id + 1,
-                                padding=2, opts=dict(title=title + ' images'))
+                #self.vis.images(images, nrow=ncols, win=self.display_id + 1,
+                #                padding=2, opts=dict(title=title + ' images'))
                 label_html = '<table>%s</table>' % label_html
-                self.vis.text(table_css + label_html, win=self.display_id + 2,
-                              opts=dict(title=title + ' labels'))
+                #self.vis.text(table_css + label_html, win=self.display_id + 2,
+                #              opts=dict(title=title + ' labels'))
             else:
                 idx = 1
                 for label, image_numpy in visuals.items():
-                    self.vis.image(image_numpy.transpose([2, 0, 1]), opts=dict(title=label),
-                                   win=self.display_id + idx)
+                    #self.vis.image(image_numpy.transpose([2, 0, 1]), opts=dict(title=label),
+                    #               win=self.display_id + idx)
                     idx += 1
 
         if self.use_html and (save_result or not self.saved):  # save images to a html file
@@ -103,15 +104,15 @@ class Visualizer():
             self.plot_data = {'X': [], 'Y': [], 'legend': list(errors.keys())}
         self.plot_data['X'].append(epoch + counter_ratio)
         self.plot_data['Y'].append([errors[k] for k in self.plot_data['legend']])
-        self.vis.line(
-            X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
-            Y=np.array(self.plot_data['Y']),
-            opts={
-                'title': self.name + ' loss over time',
-                'legend': self.plot_data['legend'],
-                'xlabel': 'epoch',
-                'ylabel': 'loss'},
-            win=self.display_id)
+        #self.vis.line(
+        #    X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
+        #    Y=np.array(self.plot_data['Y']),
+        #    opts={
+        #        'title': self.name + ' loss over time',
+        #        'legend': self.plot_data['legend'],
+        #        'xlabel': 'epoch',
+        #        'ylabel': 'loss'},
+        #    win=self.display_id)
 
     # errors: same format as |errors| of plotCurrentErrors
     def print_current_errors(self, epoch, i, errors, t, t_data):
