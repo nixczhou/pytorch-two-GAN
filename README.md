@@ -1,13 +1,16 @@
-<br><br><br>
-
 # This code is for soccer field marking detction using two conditional GANs.
 It is part of the paper "Sports Camera Calibration via Synthetic Data".
 
 @article{chen2018sports,
+
   title={Sports Camera Calibration via Synthetic Data},
+  
   author={Chen, Jianhui and Little, James J},
+  
   journal={arXiv preprint arXiv:1810.10658},
+  
   year={2018}
+  
 }
 
 Link: https://arxiv.org/abs/1810.10658 
@@ -17,6 +20,13 @@ Download data from: https://www.dropbox.com/s/5rvjo4buh8xe7hc/soccer_seg_detecti
 Put it in the 'datasets' folder
 
 #### Training:
+```bash
+python train_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \ 
+--name soccer_seg_detection_pix2pix --model two_pix2pix --which_model_netG unet_256 \
+--which_direction AtoB --lambda_A 100 --dataset_mode two_aligned \ 
+--no_lsgan --norm batch --pool_size 0 --output_nc 1 \ 
+--phase1 train_phase_1 --phase2 train_phase_2 --save_epoch_freq 2
+```
 python train_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \ 
 --name soccer_seg_detection_pix2pix --model two_pix2pix --which_model_netG unet_256 \
 --which_direction AtoB --lambda_A 100 --dataset_mode two_aligned \ 
