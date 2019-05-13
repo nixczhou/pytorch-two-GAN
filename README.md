@@ -1,30 +1,42 @@
-<img src='imgs/horse2zebra.gif' align="right" width=384>
-
 <br><br><br>
 
-# This code is for soccer field marking detction. 
+# This code is for soccer field marking detction using two conditional GANs.
+It is part of the paper "Sports Camera Calibration via Synthetic Data".
 
-Prepare data:
+@article{chen2018sports,
+  title={Sports Camera Calibration via Synthetic Data},
+  author={Chen, Jianhui and Little, James J},
+  journal={arXiv preprint arXiv:1810.10658},
+  year={2018}
+}
+
+Link: https://arxiv.org/abs/1810.10658 
+
+#### Prepare data:
 Download data from: https://www.dropbox.com/s/5rvjo4buh8xe7hc/soccer_seg_detection.zip?dl=0
 Put it in the 'datasets' folder
 
-Training:
+#### Training:
 python train_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \ 
 --name soccer_seg_detection_pix2pix --model two_pix2pix --which_model_netG unet_256 \
 --which_direction AtoB --lambda_A 100 --dataset_mode two_aligned \ 
 --no_lsgan --norm batch --pool_size 0 --output_nc 1 \ 
 --phase1 train_phase_1 --phase2 train_phase_2 --save_epoch_freq 2
 
-Testing:
+#### Testing:
 python test_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \
 --which_direction AtoB --model two_pix2pix --name soccer_seg_detection_pix2pix \
 --dataset_mode aligned --which_model_netG unet_256 --norm batch --how_many 18 --loadSize 256
 
-The code is tested on python 3.7, pytorch 1.1.
+The code is tested on a linux system with python 3.7 and pytorch 1.1.
+
+
 
 The code is modified from https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
 
 # CycleGAN and pix2pix in PyTorch
+
+<img src='imgs/horse2zebra.gif' align="right" width=384>
 
 This is our ongoing PyTorch implementation for both unpaired and paired image-to-image translation.
 
