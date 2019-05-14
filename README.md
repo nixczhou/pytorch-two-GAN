@@ -30,7 +30,7 @@ python train_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \
 ```bash
 python test_two_pix2pix.py --dataroot ./datasets/soccer_seg_detection \
 --which_direction AtoB --model two_pix2pix --name soccer_seg_detection_pix2pix \
---dataset_mode aligned --which_model_netG unet_256 --norm batch --how_many 18 --loadSize 256
+--output_nc 1 --dataset_mode aligned --which_model_netG unet_256 --norm batch --how_many 186 --loadSize 256
 ```
 
 The code is tested on a linux system with python 3.7 and pytorch 1.1.
